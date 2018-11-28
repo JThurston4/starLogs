@@ -35,14 +35,13 @@ server.get('/', (req, res, next) => {
 
 
 let logRoutes = require('./server-stuff/routes/log-route')
-
 server.use('/api/logs', logRoutes)
 
 let shipRoutes = require('./server-stuff/routes/ship-route')
-
 server.use('/api/ships', shipRoutes)
 
-
+let commentRoutes = require('./server-stuff/routes/comment-route')
+server.use('/api/comments', commentRoutes)
 
 server.use('*', (error, req, res, next) => {
   res.status(error.status || 400).send({ message: error.message })

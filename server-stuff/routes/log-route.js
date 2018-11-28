@@ -10,9 +10,14 @@ router.get('/:id', (req, res, next) => {
     .catch(next)
 })
 
-router.get('/:shipId', (req, res, next) => {
+router.get('/shipLogs/:shipId', (req, res, next) => {
   Ships.findById(req.params.shipId)
-    .then(log => res.send({ log }))
+    .then(ship => {
+      Logs.find({ shipId: ship._id })
+        .then(logs => {
+          res.send(logs)
+        })
+    })
     .catch(next)
 })
 
@@ -24,13 +29,16 @@ router.get('/', (req, res, next) => {
 
 ///post/create a new log
 router.post('/', (req, res, next) => {
-  req.body.author = req.session.uid
-  req.body.shipId = Users.ship
-  Logs.create(req.body)
-    .then(log => {
-      res.send(log)
+  Users.findOne(req.session.uid)
+    .then(user => {
+      req.body.author = req.session.uid
+      req.body.shipId = user.ship
+      Logs.create(req.body)
+        .then(log => {
+          res.send(log)
+        })
+        .catch(next)
     })
-    .catch(next)
 })
 
 
